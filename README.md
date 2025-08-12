@@ -105,4 +105,4 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 ## Contact
 
-Your Name – olugbilehassan@gmail.com 
+Hassan Olugbile – olugbilehassan@gmail.com 
