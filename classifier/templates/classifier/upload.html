@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>YouClassify - Train a Model</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #333;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #555;
+            padding: 8px 12px;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        .form-container {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>YouClassify - Train a Model</h1>
+
+    <div class="form-container">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.csv_file.label_tag }} {{ form.csv_file }}<br>
+            {{ form.train_size.label_tag }} {{ form.train_size }}<br>
+            {{ form.model_choice.label_tag }} {{ form.model_choice }}<br>
+            {% if user.is_authenticated %}
+            {{ form.save_model_name.label_tag }} {{ form.save_model_name }}<br>
+            {% endif %}
+            <button type="submit">Train</button>
+        </form>
+    </div>
+
+    {% if error_message %}
+    <p class="error">{{ error_message }}</p>
+    {% endif %} {% if trained_model_name %}
+    <h2>Results</h2>
+    <p><strong>Model:</strong> {{ trained_model_name }}</p>
+    <p><strong>Accuracy:</strong> {{ accuracy_value }}%</p>
+
+    <h3>Confusion Matrix Details (TP, TN, FP, FN)</h3>
+    <table>
+        <tr>
+            <th>Class Index</th>
+            <th>TP</th>
+            <th>TN</th>
+            <th>FP</th>
+            <th>FN</th>
+        </tr>
+        {% for row in conf_matrix_list %}
+        <tr>
+            <td>{{ row.class_index }}</td>
+            <td>{{ row.TP }}</td>
+            <td>{{ row.TN }}</td>
+            <td>{{ row.FP }}</td>
+            <td>{{ row.FN }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Classification Report</h3>
+    <table>
+        <tr>
+            <th>Class</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1-Score</th>
+            <th>Support</th>
+        </tr>
+        {% for metrics in class_report_list %}
+        <tr>
+            <td>{{ metrics.label }}</td>
+            <td>{{ metrics.precision }}</td>
+            <td>{{ metrics.recall }}</td>
+            <td>{{ metrics.f1_score }}</td>
+            <td>{{ metrics.support }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</body>
+
+</html>
